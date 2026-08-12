@@ -12,7 +12,7 @@ np.random.seed(42)
 # --- SIVUPALKKI: PARAMETRIT ---
 st.sidebar.header("Simulaation parametrit")
 
-years = st.sidebar.slider("Vuodet (years)", min_value=5, max_value=50, value=35, step=1)
+years = st.sidebar.slider("Vuodet (years)", min_value=5, max_value=50, value=30, step=1)
 months = years * 12
 
 monthly_inflation_rate = st.sidebar.number_input(
@@ -59,7 +59,8 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Kuukausittaiset Menot")
     default_expenses = pd.DataFrame([
-        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 3500, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
+        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 4000, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}#,
+        #{"Nimi": "Kulu2", "Määrä (€)": 1000, "Alku (kk)": 1, "Loppu (kk)": 2, "Inflaatiokorjaus": False}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos meno jatkuu simulaation loppuun asti.")
     expenses_df = st.data_editor(default_expenses, num_rows="dynamic", key="expenses_editor")
@@ -67,10 +68,10 @@ with col1:
 with col2:
     st.subheader("Kuukausittaiset Tulot / Eläkkeet")
     default_incomes = pd.DataFrame([
-        {"Nimi": "Varhennettu eläke1", "Määrä (€)": 1097, "Alku (kk)": 4 * 12 + 4, "Loppu (kk)": 7 * 12 + 4},
-        {"Nimi": "Vanhuuseläke", "Määrä (€)": 2198, "Alku (kk)": 7 * 12 + 5, "Loppu (kk)": 0} ,
-        {"Nimi": "Varhennettu eläke", "Määrä (€)": 500, "Alku (kk)": 4 * 12 + 4, "Loppu (kk)": 8 * 12 + 4},
-        {"Nimi": "Tiinan eläke", "Määrä (€)": 900, "Alku (kk)": 11 * 12 + 5, "Loppu (kk)": 0}
+        {"Nimi": "V Varhennettu eläke1", "Määrä (€)": 1097, "Alku (kk)": 4 * 12 + 4, "Loppu (kk)": 7 * 12 + 4},
+        {"Nimi": "V Vanhuuseläke", "Määrä (€)": 2198, "Alku (kk)": 7 * 12 + 5, "Loppu (kk)": 0} ,
+        {"Nimi": "T Varhennettu eläke", "Määrä (€)": 500, "Alku (kk)": 7 * 12 + 4, "Loppu (kk)": 10 * 12 + 4},
+        {"Nimi": "T vanhuuseläke", "Määrä (€)": 900, "Alku (kk)": 10 * 12 + 5, "Loppu (kk)": 0}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos tulo jatkuu simulaation loppuun asti.")
     incomes_df = st.data_editor(default_incomes, num_rows="dynamic", key="incomes_editor")
