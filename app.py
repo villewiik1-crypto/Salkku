@@ -29,7 +29,7 @@ hide_euros = st.sidebar.checkbox("Piilota euroarvot (hide_euros)", value=False)
 
 initial_capital = st.sidebar.number_input(
     "Alkupääoma (€)",
-    min_value=0, value=500000, step=10000
+    min_value=0, value=1000000, step=10000
 )
 
 # --- SIVUPALKKI: SKENAARIOT ---
@@ -59,8 +59,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Kuukausittaiset Menot")
     default_expenses = pd.DataFrame([
-        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 3500, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True},
-        {"Nimi": "Kulu2", "Määrä (€)": 1000, "Alku (kk)": 1, "Loppu (kk)": 2, "Inflaatiokorjaus": False}
+        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 3500, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos meno jatkuu simulaation loppuun asti.")
     expenses_df = st.data_editor(default_expenses, num_rows="dynamic", key="expenses_editor")
@@ -69,9 +68,9 @@ with col2:
     st.subheader("Kuukausittaiset Tulot / Eläkkeet")
     default_incomes = pd.DataFrame([
         {"Nimi": "Varhennettu eläke1", "Määrä (€)": 1097, "Alku (kk)": 4 * 12 + 4, "Loppu (kk)": 7 * 12 + 4},
-        {"Nimi": "Vanhuuseläke", "Määrä (€)": 2198, "Alku (kk)": 7 * 12 + 5, "Loppu (kk)": 0} #,
-        # {"Nimi": "Varhennettu eläke", "Määrä (€)": 500, "Alku (kk)": 4 * 12 + 4, "Loppu (kk)": 8 * 12 + 4},
-        #{"Nimi": "Tiinan eläke", "Määrä (€)": 900, "Alku (kk)": 11 * 12 + 5, "Loppu (kk)": 0}
+        {"Nimi": "Vanhuuseläke", "Määrä (€)": 2198, "Alku (kk)": 7 * 12 + 5, "Loppu (kk)": 0} ,
+        {"Nimi": "Varhennettu eläke", "Määrä (€)": 500, "Alku (kk)": 4 * 12 + 4, "Loppu (kk)": 8 * 12 + 4},
+        {"Nimi": "Tiinan eläke", "Määrä (€)": 900, "Alku (kk)": 11 * 12 + 5, "Loppu (kk)": 0}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos tulo jatkuu simulaation loppuun asti.")
     incomes_df = st.data_editor(default_incomes, num_rows="dynamic", key="incomes_editor")
