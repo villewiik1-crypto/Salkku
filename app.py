@@ -3,6 +3,15 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as rx
 from plotly.subplots import make_subplots
+import os
+
+# Yritetään tuoda openai-kirjasto
+try:
+    import openai
+
+    HAS_OPENAI = True
+except ImportError:
+    HAS_OPENAI = False
 
 # Asetetaan sivun leveä asettelu
 st.set_page_config(page_title="Salkun Monte Carlo -simulaattori", layout="wide")
@@ -11,6 +20,13 @@ np.random.seed(42)
 
 # --- SIVUPALKKI: PARAMETRIT ---
 st.sidebar.header("Simulaation parametrit")
+
+# API-avain tekoälyä varten (Tyhjä oletuksena, jotta secretkey ei näy koodissa eikä käyttöliittymässä)
+#api_key_input = st.sidebar.text_input(
+#    "OpenAI API Key (Tekoälyanalyysiä varten)",
+#    type="password",
+#    help="Syötä OpenAI API -avaimesi hakeaksesi tekoälykommentin tuloksista."
+#)
 
 years = st.sidebar.slider("Vuodet (years)", min_value=5, max_value=50, value=30, step=1)
 months = years * 12
@@ -29,13 +45,33 @@ hide_euros = st.sidebar.checkbox("Piilota euroarvot (hide_euros)", value=False)
 
 initial_capital = st.sidebar.number_input(
     "Alkupääoma (€)",
-    min_value=0, value=1000000, step=10000
+    min_value=0, value=300000, step=10000
+)
+
+# --- SIVUPALKKI: TEKOÄLYN KEHOTE (PROMPT) ---
+st.sidebar.subheader("Tekoälyn kehote (Prompt)")
+default_prompt = (
+    "Analysoi syöttetyt tulo- ja menotiedot ja arvioi miltä taloudellinen tulevaisuuteni näyttää simulaation eri vaihtoehdoissa.\n"
+    "Pyri vastaamaan seuraaviin kysymyksiin:\n"
+    "- Riittääkö varallisuuteni elämiseen simulaation ajan ja paljonko varallisuutta on jäljellä simulaation lopussa?\n"
+    "- Onko kulutasoni oikeassa suhteessa tuloihin ja sijoitustuottoihin?\n"
+    "Vertaile eri esimerkkisalkkujen mediaani, 10% ja 90% -tuloksia tuloksen ja riskitason osalta.\n"
+    "Selitä mitä eri tulosvaihtoehdot tarkoittavat siten että maallikko ymmärtää vaihtoehtojen erot.\n"
+    "Muodosta koko analyysi suomen kielellä ja käytä maallikon ymmärtämiä termejä.\n\n"
+    "{summary_prompt_data}"
+)
+
+ai_prompt_template = st.sidebar.text_area(
+    "Muokkaa tekoälylle lähetettävää kehotetta",
+    value=default_prompt,
+    height=220,
+    help="Voit muokata ohjeita tekoälylle. Pidä tekstillä paikkamerkki {summary_prompt_data}, johon simulaation tulokset sijoitetaan."
 )
 
 # --- SIVUPALKKI: SKENAARIOT ---
 st.sidebar.subheader("Skenaariot")
 default_scenarios = pd.DataFrame([
-    {"Nimi": "40/40/20 Nollatuotto", "Tuotto (%)": 0.0, "Kulu (%)": 0.36, "Volatiteetti (%)": 0.0},
+    {"Nimi": "Patjantäyte", "Tuotto (%)": 0.0, "Kulu (%)": 0.0, "Volatiteetti (%)": 0.0},
     {"Nimi": "Pankkitalletus", "Tuotto (%)": 2.0, "Kulu (%)": 0.00, "Volatiteetti (%)": 0.0},
     {"Nimi": "S-Varainhoito 100", "Tuotto (%)": 7.08, "Kulu (%)": 1.11, "Volatiteetti (%)": 15.23},
     {"Nimi": "Nordnet rohkea", "Tuotto (%)": 7.08, "Kulu (%)": 0.50, "Volatiteetti (%)": 14.76},
@@ -59,8 +95,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Kuukausittaiset Menot")
     default_expenses = pd.DataFrame([
-        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 4000, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}#,
-        #{"Nimi": "Kulu2", "Määrä (€)": 1000, "Alku (kk)": 1, "Loppu (kk)": 2, "Inflaatiokorjaus": False}
+        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 3100, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos meno jatkuu simulaation loppuun asti.")
     expenses_df = st.data_editor(default_expenses, num_rows="dynamic", key="expenses_editor")
@@ -68,10 +103,7 @@ with col1:
 with col2:
     st.subheader("Kuukausittaiset Tulot / Eläkkeet")
     default_incomes = pd.DataFrame([
-        {"Nimi": "V Varhennettu eläke1", "Määrä (€)": 1097, "Alku (kk)": 4 * 12 + 4, "Loppu (kk)": 7 * 12 + 4},
-        {"Nimi": "V Vanhuuseläke", "Määrä (€)": 2198, "Alku (kk)": 7 * 12 + 5, "Loppu (kk)": 0} ,
-        {"Nimi": "T Varhennettu eläke", "Määrä (€)": 500, "Alku (kk)": 7 * 12 + 4, "Loppu (kk)": 10 * 12 + 4},
-        {"Nimi": "T vanhuuseläke", "Määrä (€)": 900, "Alku (kk)": 10 * 12 + 5, "Loppu (kk)": 0}
+        {"Nimi": "Tulo1", "Määrä (€)": 3000, "Alku (kk)": 1, "Loppu (kk)": 0}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos tulo jatkuu simulaation loppuun asti.")
     incomes_df = st.data_editor(default_incomes, num_rows="dynamic", key="incomes_editor")
@@ -146,7 +178,6 @@ st.subheader("Simulaation tulokset")
 
 time_axis = np.arange(months + 1) / 12
 
-# Luodaan ruudukko kuvaajille
 n_scen = len(mc_results)
 cols = 2
 rows = (n_scen + 1) // 2
@@ -157,7 +188,7 @@ for idx, (name, data) in enumerate(mc_results.items()):
     r = (idx // cols) + 1
     c = (idx % cols) + 1
 
-    # 10% ja 90% rajat (täytetty alue)
+    # 10% ja 90% rajat
     fig.add_trace(
         rx.Scatter(
             x=np.concatenate([time_axis, time_axis[::-1]]),
@@ -212,3 +243,57 @@ for name, data in mc_results.items():
         })
 
 st.table(pd.DataFrame(summary_rows))
+
+# --- TEKOÄLYANALYYSI -OSIO ---
+st.markdown("---")
+st.subheader("🤖 Tekoälyneuvojan analyysi")
+
+# Luodaan painike tekoälyanalyysin käynnistämiseksi
+if st.button("Luo tekoälyanalyysi tuloksista", type="primary"):
+    # Suositaan käyttäjän syöttämää avainta, sen jälkeen ympäristömuuttujaa tai Streamlit-secretsejä
+    # api_key = api_key_input or os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY", None)
+    api_key = st.secrets.get("Salkku_KEY", None)
+
+    if not HAS_OPENAI:
+        st.error("Puuttuva kirjasto: Asenna `openai` komennolla: `pip install openai`")
+    elif not api_key:
+        st.warning("Syötä OpenAI API Key sivupalkkiin (sidebar) laittaaksesi tekoälykommentoinnin päälle.")
+    else:
+        with st.spinner("Tekoäly analysoi simulaation tuloksia..."):
+            try:
+                # Muotoillaan tulokset tekstiksi tekoälyä varten
+                summary_prompt_data = f"Monte Carlo -simulaation tulokset {years} vuoden ajalta:\n\n"
+
+                for name, res in mc_results.items():
+                    med_pct = res["median_pct"][-1]
+                    p10_pct = res["p10_pct"][-1]
+                    p90_pct = res["p90_pct"][-1]
+
+                    if hide_euros:
+                        summary_prompt_data += f"- {name}: Mediana {med_pct:+.1f}%, 10% alalaita {p10_pct:+.1f}%, 90% ylälaita {p90_pct:+.1f}%\n"
+                    else:
+                        med_abs = res["median_abs"][-1]
+                        summary_prompt_data += f"- {name}: Mediana {med_abs:,.0f} € ({med_pct:+.1f}%), 10% alalaita {p10_pct:+.1f}%, 90% ylälaita {p90_pct:+.1f}%\n"
+
+                # Sijoitetaan tulokset käyttäjän muokattavaan kehotteeseen
+                if "{summary_prompt_data}" in ai_prompt_template:
+                    final_prompt = ai_prompt_template.format(summary_prompt_data=summary_prompt_data)
+                else:
+                    final_prompt = f"{ai_prompt_template}\n\n{summary_prompt_data}"
+
+                # Kutsutaan OpenAI API:a
+                client = openai.OpenAI(api_key=api_key)
+                response = client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": "Olet asiantunteva, analyyttinen ja selkeä talousneuvoja."},
+                        {"role": "user", "content": final_prompt}
+                    ],
+                    temperature=0.7
+                )
+
+                # Näytetään vastaus siistissä laatikossa
+                st.info(response.choices[0].message.content)
+
+            except Exception as e:
+                st.error(f"Virhe tekoälyrajapinnassa: {e}")
