@@ -14,7 +14,7 @@ except ImportError:
     HAS_OPENAI = False
 
 # Asetetaan sivun leveä asettelu
-st.set_page_config(page_title="Salkun Monte Carlo -simulaattori", layout="wide")
+st.set_page_config(page_title="Manilaattori -simulaattori, näkymä taloutesi tulevaisuuteen?", layout="wide")
 
 np.random.seed(42)
 
