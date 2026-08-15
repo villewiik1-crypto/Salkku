@@ -71,11 +71,11 @@ ai_prompt_template = st.sidebar.text_area(
 # --- SIVUPALKKI: SKENAARIOT ---
 st.sidebar.subheader("Skenaariot")
 default_scenarios = pd.DataFrame([
-    {"Nimi": "Patjantäyte", "Tuotto (%)": 0.0, "Kulu (%)": 0.0, "Volatiteetti (%)": 0.0},
+    {"Nimi": "Sukan varsi", "Tuotto (%)": 0.0, "Kulu (%)": 0.0, "Volatiteetti (%)": 0.0},
     {"Nimi": "Pankkitalletus", "Tuotto (%)": 2.0, "Kulu (%)": 0.00, "Volatiteetti (%)": 0.0},
     {"Nimi": "S-Varainhoito 100", "Tuotto (%)": 7.08, "Kulu (%)": 1.11, "Volatiteetti (%)": 15.23},
     {"Nimi": "Nordnet rohkea", "Tuotto (%)": 7.08, "Kulu (%)": 0.50, "Volatiteetti (%)": 14.76},
-    {"Nimi": "Villen salkku", "Tuotto (%)": 6.16, "Kulu (%)": 1.49, "Volatiteetti (%)": 9.52},
+    {"Nimi": "Sekasalkku", "Tuotto (%)": 6.16, "Kulu (%)": 1.49, "Volatiteetti (%)": 9.52},
     {"Nimi": "40/40/20 ETF & Rohkea & Talletus", "Tuotto (%)": 6.33, "Kulu (%)": 0.33, "Volatiteetti (%)": 11.8},
     {"Nimi": "80/20 Rohkea & Talletus", "Tuotto (%)": 6.16, "Kulu (%)": 0.44, "Volatiteetti (%)": 11.5},
     {"Nimi": "80/20 ETF & Talletus", "Tuotto (%)": 7.54, "Kulu (%)": 0.17, "Volatiteetti (%)": 15.23}
