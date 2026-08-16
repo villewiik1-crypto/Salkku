@@ -45,7 +45,7 @@ hide_euros = st.sidebar.checkbox("Piilota euroarvot (hide_euros)", value=False)
 
 initial_capital = st.sidebar.number_input(
     "Alkupääoma (€)",
-    min_value=0, value=300000, step=10000
+    min_value=0, value=350000, step=10000
 )
 
 # --- SIVUPALKKI: TEKOÄLYN KEHOTE (PROMPT) ---
@@ -95,7 +95,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Kuukausittaiset Menot")
     default_expenses = pd.DataFrame([
-        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 3100, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
+        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 2300, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos meno jatkuu simulaation loppuun asti.")
     expenses_df = st.data_editor(default_expenses, num_rows="dynamic", key="expenses_editor")
