@@ -14,7 +14,7 @@ except ImportError:
     HAS_OPENAI = False
 
 # Asetetaan sivun leveä asettelu
-st.set_page_config(page_title="Manilaattori -simulaattori, näkymä taloutesi tulevaisuuteen?", layout="wide")
+st.set_page_config(page_title="Manilaattori -simulaattori, näkymä taloutesi tulevaisuuteen", layout="wide")
 
 np.random.seed(42)
 
@@ -88,7 +88,7 @@ scenarios_df = st.sidebar.data_editor(
 )
 
 # --- PÄÄSIVU: TAULUKOIDEN MUOKKAUS ---
-st.title("Manilaattori")
+st.title("Manilaattori -simulaattori, näkymä taloutesi tulevaisuuteen")
 
 col1, col2 = st.columns(2)
 
@@ -103,7 +103,8 @@ with col1:
 with col2:
     st.subheader("Kuukausittaiset Tulot / Eläkkeet")
     default_incomes = pd.DataFrame([
-        {"Nimi": "Tulo1", "Määrä (€)": 3000, "Alku (kk)": 1, "Loppu (kk)": 0}
+        {"Nimi": "Palkka", "Määrä (€)": 3000, "Alku (kk)": 1, "Loppu (kk)": 60},
+        {"Nimi": "Palkka", "Määrä (€)": 1200, "Alku (kk)": 61, "Loppu (kk)": 0}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos tulo jatkuu simulaation loppuun asti.")
     incomes_df = st.data_editor(default_incomes, num_rows="dynamic", key="incomes_editor")
