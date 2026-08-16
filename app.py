@@ -88,7 +88,7 @@ scenarios_df = st.sidebar.data_editor(
 )
 
 # --- PÄÄSIVU: TAULUKOIDEN MUOKKAUS ---
-st.title("Salkun Monte Carlo -simulaattori")
+st.title("Manilaattori")
 
 col1, col2 = st.columns(2)
 
