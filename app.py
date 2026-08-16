@@ -95,7 +95,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Kuukausittaiset Menot")
     default_expenses = pd.DataFrame([
-        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 2300, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
+        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 2200, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos meno jatkuu simulaation loppuun asti.")
     expenses_df = st.data_editor(default_expenses, num_rows="dynamic", key="expenses_editor")
