@@ -41,7 +41,7 @@ use_real_value = st.sidebar.checkbox("Näytä arvot rahan nykyarvossa (reaaliarv
 
 initial_capital = st.sidebar.number_input(
     "Alkupääoma (€)",
-    min_value=0, value=300000, step=10000
+    min_value=0, value=1050000, step=10000
 )
 
 # --- SIVUPALKKI: TEKOÄLYN KEHOTE (PROMPT) ---
@@ -68,8 +68,8 @@ ai_prompt_template = st.sidebar.text_area(
 st.sidebar.subheader("Skenaariot")
 default_scenarios = pd.DataFrame([
     {"Nimi": "Sukan varsi", "Tuotto (%)": 0.0, "Kulu (%)": 0.0, "Volatiteetti (%)": 0.0},
-    {"Nimi": "Pankkitalletus", "Tuotto (%)": 2.0, "Kulu (%)": 0.00, "Volatiteetti (%)": 0.0},
-    {"Nimi": "salkku 2028", "Tuotto (%)": 6.8, "Kulu (%)": 0.19, "Volatiteetti (%)": 11.8},
+    {"Nimi": "Pankkitalletus", "Tuotto (%)": 2.5, "Kulu (%)": 0.00, "Volatiteetti (%)": 0.0},
+    {"Nimi": "salkku 2027", "Tuotto (%)": 6.1, "Kulu (%)": 0.36, "Volatiteetti (%)": 11.7},
     {"Nimi": "Nordnet rohkea", "Tuotto (%)": 7.08, "Kulu (%)": 0.50, "Volatiteetti (%)": 14.76},
     {"Nimi": "Sekasalkku", "Tuotto (%)": 6.16, "Kulu (%)": 1.49, "Volatiteetti (%)": 9.52},
     {"Nimi": "40/40/20 ETF & Rohkea & Talletus", "Tuotto (%)": 6.33, "Kulu (%)": 0.33, "Volatiteetti (%)": 11.8},
@@ -91,7 +91,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader("Kuukausittaiset Menot")
     default_expenses = pd.DataFrame([
-        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 3100, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
+        {"Nimi": "Peruselämisen kulut", "Määrä (€)": 3800, "Alku (kk)": 1, "Loppu (kk)": 0, "Inflaatiokorjaus": True}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos meno jatkuu simulaation loppuun asti.")
     expenses_df = st.data_editor(default_expenses, num_rows="dynamic", key="expenses_editor")
@@ -99,7 +99,12 @@ with col1:
 with col2:
     st.subheader("Kuukausittaiset Tulot / Eläkkeet")
     default_incomes = pd.DataFrame([
-        {"Nimi": "Tulo1", "Määrä (€)": 3000, "Alku (kk)": 1, "Loppu (kk)": 0}
+        {"Nimi": "2027", "Määrä (€)": 4500, "Alku (kk)": 1, "Loppu (kk)": 12},
+        {"Nimi": "TW1", "Määrä (€)": 1000, "Alku (kk)": 1, "Loppu (kk)": 4},
+        {"Nimi": "TWe1", "Määrä (€)": 500, "Alku (kk)": 85, "Loppu (kk)": 121},
+        {"Nimi": "TWe2", "Määrä (€)": 900, "Alku (kk)": 122, "Loppu (kk)": 0},
+        {"Nimi": "VWe1", "Määrä (€)": 1100, "Alku (kk)": 48, "Loppu (kk)": 84},
+        {"Nimi": "VWe2", "Määrä (€)": 2200, "Alku (kk)": 85, "Loppu (kk)": 0}
     ])
     st.caption("Aseta 'Loppu (kk)' arvoksi 0, jos tulo jatkuu simulaation loppuun asti.")
     incomes_df = st.data_editor(default_incomes, num_rows="dynamic", key="incomes_editor")
